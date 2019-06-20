@@ -66,6 +66,9 @@ set textwidth=80
 set colorcolumn=+1
 set number
 set numberwidth=5
+" simplify netrw banner
+let g:netrw_banner=0
+
 
 " load plugins
 if filereadable(expand("~/.vimrc.bundles"))
@@ -145,4 +148,17 @@ set listchars=tab:»\ ,nbsp:·,trail:·
 " switch between the last two files
 nnoremap <leader><leader> <c-^>
 " FZF instead of ctrlp
-" map <C-p> :FZF<CR>
+map <C-p> :FZF<CR>
+
+" use C-Space to Esc any mode
+nnoremap <C-Space> <Esc>:noh<CR>
+vnoremap <C-Space> <Esc>gV
+onoremap <C-Space> <Esc>
+cnoremap <C-Space> <C-c>
+inoremap <C-Space> <Esc>
+" terminal sees <C-@> as <C-space>
+nnoremap <C-@> <Esc>:noh<CR>
+vnoremap <C-@> <Esc>gV
+onoremap <C-@> <Esc>
+cnoremap <C-@> <C-c>
+inoremap <C-@> <Esc>
