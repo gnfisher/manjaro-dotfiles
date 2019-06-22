@@ -35,6 +35,8 @@ set nobackup
 set nowritebackup
 set backupdir=~/.vim-tmp,~/.tmp,~/tmp,/var/tmp,/tmp
 set directory=~/.vim-tmp,~/.tmp,~/tmp,/var/tmp,/tmp
+" swap files are more trouble than they are worth
+set noswapfile
 " allow backspacing over everything in insertmode
 set backspace=indent,eol,start
 " display incomplete commands
