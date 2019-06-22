@@ -62,6 +62,7 @@ set re=1
 set diffopt=vertical
 set signcolumn=no
 :set updatetime=1000
+set complete=.,w,b,u,t,i
 :set completeopt=menu,preview
 " make it obvious where 80 chars is
 set textwidth=80
@@ -70,7 +71,8 @@ set number
 set numberwidth=5
 " simplify netrw banner
 let g:netrw_banner=0
-
+" Search for the word under the cursor
+nmap K :grep "\b<C-R><C-W>\b"<CR>
 
 " load plugins
 if filereadable(expand("~/.vimrc.bundles"))
@@ -130,6 +132,10 @@ hi TabLineFill ctermbg=250 ctermfg=250
 " will insert tab at beginning of line,
 " will use completion if not at beginning
 set wildmode=list:longest,list:full
+
+" Indent HTML tags
+let g:html_indent_inctags = "p,li"
+
 function! InsertTabWrapper()
     let col = col('.') - 1
     if !col || getline('.')[col - 1] !~ '\k'
@@ -140,18 +146,15 @@ function! InsertTabWrapper()
 endfunction
 inoremap <Tab> <c-r>=InsertTabWrapper()<cr>
 inoremap <S-Tab> <c-n>
+
 " quicker window movement
 nnoremap <C-j> <C-w>j
 nnoremap <C-k> <C-w>k
 nnoremap <C-h> <C-w>h
 nnoremap <C-l> <C-w>l
+
 " display extra whitespace
 set listchars=tab:»\ ,nbsp:·,trail:·
-" switch between the last two files
-nnoremap <leader><leader> <c-^>
-" FZF instead of ctrlp
-map <C-p> :FZF<CR>
-map ; :Buffers<CR>
 
 " use C-Space to Esc any mode
 nnoremap <C-Space> <Esc>:noh<CR>
@@ -159,11 +162,43 @@ vnoremap <C-Space> <Esc>gV
 onoremap <C-Space> <Esc>
 cnoremap <C-Space> <C-c>
 inoremap <C-Space> <Esc>
+
 " terminal sees <C-@> as <C-space>
 nnoremap <C-@> <Esc>:noh<CR>
 vnoremap <C-@> <Esc>gV
 onoremap <C-@> <Esc>
 cnoremap <C-@> <C-c>
 inoremap <C-@> <Esc>
+
+" switch between the last two files
+nnoremap <leader><leader> <c-^>
+
+" FZF instead of ctrlp
+map <C-p> :FZF<CR>
+map ; :Buffers<CR>
+
+" Easier than "+
+nmap cp "+y
+nmap cv "+p
+nmap cV "+P
+
+nmap <Leader>g :silent !urxvt -e gitsh &> /dev/null &<CR>
+nmap <Leader>z :silent !urxvt &> /dev/null &<CR>
+
+let test#strategy = 'dispatch'
+
+command! -bang -nargs=* Ag
+  \ call fzf#vim#ag(<q-args>,
+  \                 <bang>0 ? fzf#vim#with_preview('up:60%')
+  \                         : fzf#vim#with_preview('right:50%:hidden', '?'),
+  \                 <bang>0)
+
+nnoremap <leader>ga :Files app/<cr>
+nnoremap <leader>gm :Files app/models/<cr>
+nnoremap <leader>gv :Files app/views/<cr>
+nnoremap <leader>gc :Files app/controllers/<cr>
+nnoremap <leader>gy :Files app/assets/stylesheets/<cr>
+nnoremap <leader>gj :Files app/assets/javascripts/<cr>
+nnoremap <leader>gs :Files spec/<cr>
 
 set background=light
