@@ -151,6 +151,7 @@ set listchars=tab:»\ ,nbsp:·,trail:·
 nnoremap <leader><leader> <c-^>
 " FZF instead of ctrlp
 map <C-p> :FZF<CR>
+map ; :Buffers<CR>
 
 " use C-Space to Esc any mode
 nnoremap <C-Space> <Esc>:noh<CR>
