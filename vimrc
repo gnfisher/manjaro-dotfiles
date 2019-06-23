@@ -7,6 +7,7 @@ autocmd!
 " Basic Editting Configs
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 set nocompatible
+set clipboard=unnamed
 " allow unsaved background buffers and remember marks/undo for them
 set hidden
 " remember more commands and search history
@@ -47,7 +48,8 @@ filetype plugin indent on
 set wildmode=longest,list
 set wildmenu
 let mapleader=" "
-:set timeout timeoutlen=1000 ttimeoutlen=100
+" set timeout timeoutlen=1000 ttimeoutlen=100
+set timeout timeoutlen=3000 ttimeoutlen=100
 set modeline
 set modelines=3
 set foldmethod=manual
@@ -185,8 +187,6 @@ nmap cV "+P
 nmap <Leader>g :silent !urxvt -e gitsh &> /dev/null &<CR>
 nmap <Leader>z :silent !urxvt &> /dev/null &<CR>
 
-let test#strategy = 'dispatch'
-
 command! -bang -nargs=* Ag
   \ call fzf#vim#ag(<q-args>,
   \                 <bang>0 ? fzf#vim#with_preview('up:60%')
@@ -200,5 +200,15 @@ nnoremap <leader>gc :Files app/controllers/<cr>
 nnoremap <leader>gy :Files app/assets/stylesheets/<cr>
 nnoremap <leader>gj :Files app/assets/javascripts/<cr>
 nnoremap <leader>gs :Files spec/<cr>
+
+nmap <silent> <leader>t :TestNearest<CR>
+nmap <silent> <leader>T :TestFile<CR>
+nmap <silent> <leader>a :TestSuite<CR>
+nmap <silent> <leader>l :TestLast<CR>
+" nmap <silent> <leader>g :TestVisit<CR>
+
+let test#strategy = 'dispatch'
+
+nnoremap <leader>` :vps scratch.md
 
 set background=light
