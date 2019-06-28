@@ -130,6 +130,9 @@ hi StatusLine ctermbg=16 ctermfg=251
 hi TabLine ctermbg=250 ctermfg=16
 hi TabLineFill ctermbg=250 ctermfg=250
 
+" Enable matchit for better navigating
+runtime macros/matchit.vim
+
 " Tab completion
 " will insert tab at beginning of line,
 " will use completion if not at beginning
@@ -177,14 +180,43 @@ nnoremap <leader><leader> <c-^>
 
 " FZF instead of ctrlp
 map <C-p> :FZF<CR>
-map ; :Buffers<CR>
+map <C-o> :Buffers<CR>
 
-" Easier than "+
-nmap cp "+y
-nmap cv "+p
-nmap cV "+P
+function! s:update_fzf_colors()
+  let rules =
+  \ { 'fg':      [['Normal',       'fg']],
+    \ 'bg':      [['Normal',       'bg']],
+    \ 'hl':      [['Comment',      'fg']],
+    \ 'fg+':     [['CursorColumn', 'fg'], ['Normal', 'fg']],
+    \ 'bg+':     [['CursorColumn', 'fg']],
+    \ 'hl+':     [['Statement',    'fg']],
+    \ 'info':    [['PreProc',      'fg']],
+    \ 'prompt':  [['Conditional',  'fg']],
+    \ 'pointer': [['Exception',    'fg']],
+    \ 'marker':  [['Keyword',      'fg']],
+    \ 'spinner': [['Label',        'fg']],
+    \ 'header':  [['Comment',      'fg']] }
+  let cols = []
+  for [name, pairs] in items(rules)
+    for pair in pairs
+      let code = synIDattr(synIDtrans(hlID(pair[0])), pair[1])
+      if !empty(name) && code > 0
+        call add(cols, name.':'.code)
+        break
+      endif
+    endfor
+  endfor
+  let s:orig_fzf_default_opts = get(s:, 'orig_fzf_default_opts', $FZF_DEFAULT_OPTS)
+  let $FZF_DEFAULT_OPTS = s:orig_fzf_default_opts .
+        \ empty(cols) ? '' : (' --color='.join(cols, ','))
+endfunction
 
-nmap <Leader>g :silent !urxvt -e gitsh &> /dev/null &<CR>
+augroup _fzf
+  autocmd!
+  autocmd ColorScheme * call <sid>update_fzf_colors()
+augroup END
+
+nmap <Leader>gg :silent !urxvt -e gitsh &> /dev/null &<CR>
 nmap <Leader>z :silent !urxvt &> /dev/null &<CR>
 
 command! -bang -nargs=* Ag
@@ -207,8 +239,28 @@ nmap <silent> <leader>a :TestSuite<CR>
 nmap <silent> <leader>l :TestLast<CR>
 " nmap <silent> <leader>g :TestVisit<CR>
 
-let test#strategy = 'dispatch'
+" Bring back VTR!
+nnoremap <leader>ap :VtrAttachToPane 2<cr>
+let test#strategy = 'vtr'
 
-nnoremap <leader>` :vps scratch.md
+nmap \ :Ag 
+
+let g:elm_setup_keybindings = 0
+
+" Move between linting errors
+nnoremap ]r :ALENextWrap<CR>
+nnoremap [r :ALEPreviousWrap<CR>
+
+autocmd VimEnter *
+      \ set updatetime=1000 |
+      \ let g:ale_lint_on_text_changed = 0
+autocmd CursorHold * call ale#Queue(0)
+autocmd CursorHoldI * call ale#Queue(0)
+autocmd InsertEnter * call ale#Queue(0)
+autocmd InsertLeave * call ale#Queue(0)
+
+" Search and replace
+nnoremap <leader>sub :%s///g<left><left>
+vnoremap <leader>sub :s///g<left><left>
 
 set background=light

@@ -1,10 +1,7 @@
 call plug#begin('~/.vim/bundle')
 
 " define bundles via Github repos
-Plug 'ctrlpvim/ctrlp.vim'
 Plug 'janko-m/vim-test'
-Plug 'pangloss/vim-javascript'
-Plug 'mxw/vim-jsx'
 Plug 'pbrisbin/vim-mkdir'
 Plug 'tpope/vim-bundler'
 Plug 'tpope/vim-endwise'
